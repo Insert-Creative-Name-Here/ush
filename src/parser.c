@@ -1,5 +1,16 @@
 #include "ush.h"
 
+char *read_command()
+{
+    char *line = (char *) NULL;
+
+    line = readline(PROMPT);
+    if (line) 
+        add_history(line);
+
+    return line;
+}
+
 char **parse_line(char *line)
 {
     int bufsize = TOK_BUFSIZE, position = 0;

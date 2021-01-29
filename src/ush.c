@@ -14,33 +14,10 @@ void loop(void)
     int status;
 
     do {
-        print_prompt();
         line = read_command();
         args = parse_line(line);
         status = execute_command(args);
     } while (status);
-}
-
-void print_prompt(void)
-{
-    printf("> ");
-}
-
-char *read_command()
-{
-    char *line = NULL;
-    size_t bufsize = 0;
-
-    if(getline(&line, &bufsize, stdin) == -1) {
-        if (feof(stdin)) {
-            exit(EXIT_SUCCESS); // received EOF
-        } else {
-            perror("readline");
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    return line;
 }
 
 int exec_extern_command(char **args) {
@@ -53,7 +30,7 @@ int exec_extern_command(char **args) {
             perror("execvp");
         exit(EXIT_FAILURE);
     } else if (pid < 0) {
-        perror("pid lower than 0");
+        perror("fork error");
     } else {
         do {
             wpid = waitpid(pid, &status, WUNTRACED);

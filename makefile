@@ -1,5 +1,5 @@
 CXX = gcc
-CFLAGS =
+CFLAGS = -lreadline
 OBJECTS = ush.o parser.o builtins.o
 
 ush: $(OBJECTS)
