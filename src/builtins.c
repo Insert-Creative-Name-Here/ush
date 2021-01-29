@@ -1,11 +1,18 @@
 #include "ush.h"
+#include <limits.h>
+
+// Current working dir
+char cwdir[PATH_MAX];
+char lwdir[PATH_MAX];
 
 char *builtins[] = {
-    "cd",
+    "exit",
+    "cd"
 };
 
 int (*builtin_funcs[]) (char**) = {
-    &cd,
+    &exit_shell,
+    &cd
 };
 
 int num_builtins(void) {
@@ -14,12 +21,27 @@ int num_builtins(void) {
 
 int cd(char **args)
 {
-    if (args[1] == NULL) {
+    if (args[1] == NULL)
         args[1] = getenv("HOME");
-    } 
+
+    if (strcmp(args[1], "-") == 0) {
+        chdir(lwdir);
+        return 1;
+    }
+
+    if (!(getcwd(lwdir, sizeof(lwdir)) != NULL))
+        perror("getcwd() error");
 
     if(chdir(args[1]) != 0)
-        perror("cd");
+        perror("chdir() error");
+
+    if (!(getcwd(cwdir, sizeof(cwdir)) != NULL))
+        perror("getcwd() error");
 
     return 1;
+}
+
+int exit_shell(char **args)
+{
+    exit(EXIT_FAILURE);
 }
