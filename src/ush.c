@@ -2,7 +2,15 @@
 
 int main(int argc, char **argv)
 {
+    // Config files...
+
+
+    // Interactive mode
     loop();
+
+
+    // Then should come some cleanup
+
 
     return 0;
 }
@@ -17,7 +25,7 @@ void loop(void)
         line = read_command();
         args = parse_line(line);
         status = execute_command(args);
-    } while (status);
+    } while (!status);
 }
 
 int exec_extern_command(char **args) {
@@ -37,17 +45,28 @@ int exec_extern_command(char **args) {
         } while(!WIFEXITED(status) && !WIFSIGNALED(status));
     }
 
-    return 1;
+    return 0;
+}
+
+char *expand_variable(char *arg) {
+    char *look_for = arg + 1;
+    printf("%s\n", look_for);
+
+    return getenv(look_for);
 }
 
 int execute_command(char **args)
 {
     if (args[0] == NULL) {
-        return 1;
+        return 0;
     }
 
-    for(int i = 0; i < num_builtins(); i++) {
-        if(strcmp(args[0], builtins[i]) == 0)
+    for (int i = 0; i < num_aliases(); i++)
+        if (strcmp(args[0], aliases[i]) == 0)
+            args[0] = alias_expansion[i];
+
+    for (int i = 0; i < num_builtins(); i++) {
+        if (strcmp(args[0], builtins[i]) == 0)
             return (*builtin_funcs[i])(args);
     }
 

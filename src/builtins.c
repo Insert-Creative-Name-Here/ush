@@ -26,7 +26,7 @@ int cd(char **args)
 
     if (strcmp(args[1], "-") == 0) {
         chdir(lwdir);
-        return 1;
+        return 0;
     }
 
     if (!(getcwd(lwdir, sizeof(lwdir)) != NULL))
@@ -38,7 +38,7 @@ int cd(char **args)
     if (!(getcwd(cwdir, sizeof(cwdir)) != NULL))
         perror("getcwd() error");
 
-    return 1;
+    return 0;
 }
 
 int exit_shell(char **args)

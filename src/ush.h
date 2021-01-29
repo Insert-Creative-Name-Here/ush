@@ -18,10 +18,15 @@ int execute_command(char **args);
 char *read_command(void);
 char **parse_line(char *line);
 
+// Aliases
+extern char *aliases[];
+extern char *alias_expansion[];
+int num_aliases(void);
+
 // Builtins
 extern char *builtins[];
-int num_builtins(void);
 extern int (*builtin_funcs[]) (char **);
+int num_builtins(void);
 int cd(char **args);
 int help(char **args);
 int exit_shell(char **args);
