@@ -70,7 +70,7 @@ int execute_command(char **args)
     }
 
     for(int i = 0; i < num_builtins(); i++) {
-        if(strcmp(args[i], builtins[i]) == 0)
+        if(strcmp(args[0], builtins[i]) == 0)
             return (*builtin_funcs[i])(args);
     }
 
