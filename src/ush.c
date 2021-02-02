@@ -2,14 +2,14 @@
 
 int main(int argc, char **argv)
 {
-    // Config files...
-
+    // Load config files, if any...
+    setenv("OLDPWD", getenv("PWD"), 1); // Initialize OLDPWD
 
     // Interactive mode
     loop();
 
 
-    // Then should come some cleanup
+    // Then, do some cleanup...
 
 
     return 0;
@@ -18,23 +18,26 @@ int main(int argc, char **argv)
 void loop(void)
 {
     char *line;
-    char **args;
+    int argc;
+    char **argv;
     int status;
 
     do {
         line = read_command();
-        args = parse_line(line);
-        status = execute_command(args);
+        argv = parse_line(line);
+        argc = sizeof(argv) / sizeof(char);
+        status = execute_command(argc, argv);
     } while (!status);
 }
 
-int exec_extern_command(char **args) {
+int exec_extern_command(int argc, char **argv)
+{
     pid_t pid, wpid;
     int status;
 
     pid = fork();
     if (pid == 0) {
-        if (execvp(args[0], args) == -1)
+        if (execvp(argv[0], argv) == -1)
             perror("execvp");
         exit(EXIT_FAILURE);
     } else if (pid < 0) {
@@ -48,27 +51,19 @@ int exec_extern_command(char **args) {
     return 0;
 }
 
-char *expand_variable(char *arg) {
-    char *look_for = arg + 1;
-    printf("%s\n", look_for);
-
-    return getenv(look_for);
-}
-
-int execute_command(char **args)
+int execute_command(int argc, char **argv)
 {
-    if (args[0] == NULL) {
+    if (argv[0] == NULL) {
         return 0;
     }
 
     for (int i = 0; i < num_aliases(); i++)
-        if (strcmp(args[0], aliases[i]) == 0)
-            args[0] = alias_expansion[i];
+        if (strcmp(argv[0], aliases[i]) == 0)
+            argv[0] = alias_expansion[i];
 
-    for (int i = 0; i < num_builtins(); i++) {
-        if (strcmp(args[0], builtins[i]) == 0)
-            return (*builtin_funcs[i])(args);
-    }
+    for (int i = 0; i < num_builtins(); i++)
+        if (strcmp(argv[0], builtins[i]) == 0)
+            return (*builtin_funcs[i])(argc, argv);
 
-    return exec_extern_command(args);
+    return exec_extern_command(argc, argv);
 }

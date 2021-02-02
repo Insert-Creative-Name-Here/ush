@@ -1,11 +1,13 @@
 #include "ush.h"
 
 char *aliases[] = {
-    "m"
+    "m",
+    "v"
 };
 
 char *alias_expansion[] = {
-    "make"
+    "make",
+    "nvim"
 };
 
 int num_aliases(void) {

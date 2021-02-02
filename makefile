@@ -1,9 +1,9 @@
 CXX = gcc
-CFLAGS = -lreadline
+CFLAGS =
 OBJECTS = ush.o parser.o builtins.o aliases.o
 
 ush: $(OBJECTS)
-	$(CXX) $(CFLAGS) -o ush $(OBJECTS)
+	$(CXX) -lreadline $(CFLAGS) -o ush $(OBJECTS)
 	rm $(OBJECTS)
 
 ush.o: src/ush.c src/ush.h
