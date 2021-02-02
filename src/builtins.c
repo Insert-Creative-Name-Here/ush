@@ -1,16 +1,15 @@
 #include "ush.h"
-#include <limits.h>
 
-// Current working dir
-char cwdir[PATH_MAX];
-char lwdir[PATH_MAX];
+int cd(int argc, char **argv);
+int help(int argc, char **argv);
+int exit_shell(int argc, char **argv);
 
 char *builtins[] = {
     "exit",
     "cd"
 };
 
-int (*builtin_funcs[]) (char**) = {
+int (*builtin_funcs[]) (int, char**) = {
     &exit_shell,
     &cd
 };
@@ -19,29 +18,25 @@ int num_builtins(void) {
     return sizeof(builtins) / sizeof(char *);
 }
 
-int cd(char **args)
+int cd(int argc, char **argv)
 {
-    if (args[1] == NULL)
-        args[1] = getenv("HOME");
+    if (argv[1] == NULL)
+        argv[1] = getenv("HOME");
 
-    if (strcmp(args[1], "-") == 0) {
-        chdir(lwdir);
-        return 0;
-    }
+    char *OLDPWD = getenv("OLDPWD");
 
-    if (!(getcwd(lwdir, sizeof(lwdir)) != NULL))
-        perror("getcwd() error");
+    if (strcmp(argv[1], "-") == 0)
+        argv[1] = OLDPWD;
 
-    if(chdir(args[1]) != 0)
-        perror("chdir() error");
+    if(chdir(argv[1]) != 0)
+        perror("cd");
 
-    if (!(getcwd(cwdir, sizeof(cwdir)) != NULL))
-        perror("getcwd() error");
+    setenv("OLDPWD", OLDPWD, 1); // Update OLDPWD
 
     return 0;
 }
 
-int exit_shell(char **args)
+int exit_shell(int argc, char **argv)
 {
-    exit(EXIT_FAILURE);
+    exit(EXIT_SUCCESS);
 }
