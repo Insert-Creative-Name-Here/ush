@@ -21,7 +21,7 @@ int num_builtins(void) {
 
 int cd(int argc, char **argv)
 {
-    if (argc == 1)
+    if (argv[1] == NULL)
         argv[1] = getenv("HOME");
 
     char *OLDPWD = getenv("OLDPWD");

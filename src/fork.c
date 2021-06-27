@@ -34,7 +34,7 @@ int exec_cmd(int argc, char **argv)
     if (argv[0] == NULL)
         return 0;
 
-    for (int i = 0; i < num_builtins(); i++) {
+    for (int i = 0; i < num_aliases(); i++) {
         if (strcmp(argv[0], aliases[i]) == 0) {
             argv[0] = alias_expansion[i];
             break;
@@ -45,5 +45,5 @@ int exec_cmd(int argc, char **argv)
         if (strcmp(argv[0], builtins[i]) == 0)
             return (*builtin_funcs[i])(argc, argv);
 
-    return exec_cmd(argc, argv);
+    return fork_program(argv[0], argv);
 }
