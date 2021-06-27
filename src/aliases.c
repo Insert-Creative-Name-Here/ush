@@ -1,4 +1,4 @@
-#include "ush.h"
+#include "aliases.h"
 
 char *aliases[] = {
     "m",

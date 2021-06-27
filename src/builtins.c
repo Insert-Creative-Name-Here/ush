@@ -1,8 +1,9 @@
-#include "ush.h"
+#include "builtins.h"
 
-int cd(int argc, char **argv);
-int help(int argc, char **argv);
-int exit_shell(int argc, char **argv);
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 char *builtins[] = {
     "exit",
@@ -20,7 +21,7 @@ int num_builtins(void) {
 
 int cd(int argc, char **argv)
 {
-    if (argv[1] == NULL)
+    if (argc == 1)
         argv[1] = getenv("HOME");
 
     char *OLDPWD = getenv("OLDPWD");

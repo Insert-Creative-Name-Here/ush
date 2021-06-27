@@ -1,22 +1,30 @@
-CXX = gcc
-CFLAGS =
-OBJECTS = ush.o parser.o builtins.o aliases.o
+CC 			= gcc
+VPATH 		= src:
+CFLAGS 		= -Wall -Wpedantic -Wextra -g -lreadline
+INSTALL_DIR = ~/bin
+BIN_NAME 	= ush
+OBJECTS 	= main.o aliases.o builtins.o input.o fork.o parser.o
 
-ush: $(OBJECTS)
-	$(CXX) -lreadline $(CFLAGS) -o ush $(OBJECTS)
-	rm $(OBJECTS)
+.PHONY: all
+all: $(OBJECTS)
+	$(CC) $(CFLAGS) -o ush $(OBJECTS)
 
-ush.o: src/ush.c src/ush.h
-	$(CXX) -c src/ush.c
+main.o: main.c input.h parser.h builtins.h aliases.h
 
-parser.o: src/parser.c src/ush.h
-	$(CXX) -c src/parser.c
+aliases.o: aliases.c aliases.h
 
-builtins.o: src/builtins.c src/ush.h
-	$(CXX) -c src/builtins.c
+builtins.o: builtins.c builtins.h
 
-aliases.o: src/aliases.c src/ush.h
-	$(CXX) -c src/aliases.c
+input.o: input.c input.h
 
+fork.o: fork.c fork.h aliases.h builtins.h
+
+parser.o: parser.c parser.h
+
+.PHONY: install
+install: $(BIN_NAME)
+	mv $(BIN_NAME) $(INSTALL_DIR)
+
+.PHONY: clean
 clean:
-	rm ush
+	rm $(OBJECTS)

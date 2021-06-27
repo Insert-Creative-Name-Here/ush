@@ -1,17 +1,8 @@
-#include "ush.h"
-#include <readline/readline.h>
-#include <readline/history.h>
+#include "parser.h"
 
-char *read_command()
-{
-    char *line = (char *) NULL;
-
-    line = readline(PROMPT);
-    if (line) 
-        add_history(line);
-
-    return line;
-}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 char **parse_line(char *line)
 {
